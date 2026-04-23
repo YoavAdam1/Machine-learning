@@ -1,2 +1,2 @@
 import streamlit as st
-st.write("האתר שלי")
+st.write("אללע כוסעומו! יצרתי אתר!")
