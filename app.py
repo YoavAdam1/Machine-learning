@@ -1,2 +1,2 @@
-import streamlight as st
+import streamlit as st
 st.write("האתר שלי")
