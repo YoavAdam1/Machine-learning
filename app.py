@@ -1,7 +1,14 @@
+import streamlit as st
 import pandas as pd
 import numpy as np
-import streamlit as st
 
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
+# ======================
+# Dataset
+# ======================
 def generate_diabetes_dataset(n=500, noise_ratio=0.1, seed=42):
     np.random.seed(seed)
 
@@ -55,7 +62,6 @@ def generate_diabetes_dataset(n=500, noise_ratio=0.1, seed=42):
     return df
 
 df = generate_diabetes_dataset()
-
 
     st.scatter_chart(
         df,
