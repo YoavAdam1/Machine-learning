@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import streamlit as st
 
 def generate_diabetes_dataset(n=500, noise_ratio=0.1, seed=42):
@@ -58,34 +57,9 @@ def generate_diabetes_dataset(n=500, noise_ratio=0.1, seed=42):
 df = generate_diabetes_dataset()
 
 
-
-labels = {
-    0: "Healthy",
-    1: "Diabetes"
-}
-
-colors = {
-    0: "#2ECC71",   # green
-    1: "#E74C3C"    # red
-}
-
-for label in [0, 1]:
-    subset = df[df["diabetes"] == label]
-
-    plt.scatter(
-        subset["blood_sugar"],
-        subset["blood_pressure"],
-        label=labels[label],
-        color=colors[label],
-        s=70,          # גודל נקודות
-        alpha=0.8      # שקיפות קלה
+    st.scatter_chart(
+        df,
+        x="blood_sugar",
+        y="blood_pressure",
+        color="diabetes"
     )
-
-plt.xlabel("Blood Sugar Level")
-plt.ylabel("Blood Pressure")
-plt.title("Diabetes Classification Dataset")
-
-plt.legend()
-plt.grid(alpha=0.3)
-
-plt.show()
