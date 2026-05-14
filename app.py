@@ -1,49 +1,56 @@
-import streamlit as st
 import pandas as pd
 import numpy as np
 
-def generate_dataset(n=2000, noise_ratio=0.05, random_state=42):
-    np.random.seed(random_state)
-    
+def generate_diabetes_dataset(n=500, noise_ratio=0.1, seed=42):
+    np.random.seed(seed)
+
     half = n // 2
+    noise_n = int(n * noise_ratio / 2)
 
-    real = pd.DataFrame({
-        "signal_strength": np.random.normal(loc=75, scale=15, size=half),
-        "signal_duration": np.random.normal(loc=14, scale=5, size=half),
-        "time_to_peak": np.random.normal(loc=4, scale=2, size=half),
-        "hour": np.random.randint(0, 24, size=half),
-        "day_of_week": np.random.randint(1, 8, size=half),
-        "latitude": np.random.normal(loc=31.7, scale=0.8, size=half),
-        "longitude": np.random.normal(loc=34.9, scale=0.8, size=half),
-        "station_id": np.random.randint(1, 11, size=half),
-        "launch_to_israel": 1
+    # ======================
+    # Healthy (0)
+    # ======================
+    healthy = pd.DataFrame({
+        "blood_sugar": np.random.randint(70, 125, half),
+        "blood_pressure": np.random.randint(65, 90, half),
+        "diabetes": 0
     })
 
-    false = pd.DataFrame({
-        "signal_strength": np.random.normal(loc=55, scale=20, size=half),
-        "signal_duration": np.random.normal(loc=10, scale=6, size=half),
-        "time_to_peak": np.random.normal(loc=6, scale=3, size=half),
-        "hour": np.random.randint(0, 24, size=half),
-        "day_of_week": np.random.randint(1, 8, size=half),
-        "latitude": np.random.normal(loc=32.2, scale=1.2, size=half),
-        "longitude": np.random.normal(loc=35.2, scale=1.2, size=half),
-        "station_id": np.random.randint(1, 11, size=half),
-        "launch_to_israel": 0
+    # ======================
+    # Diabetic (1)
+    # ======================
+    diabetic = pd.DataFrame({
+        "blood_sugar": np.random.randint(130, 220, half),
+        "blood_pressure": np.random.randint(80, 125, half),
+        "diabetes": 1
     })
 
-    df = pd.concat([real, false]).sample(frac=1).reset_index(drop=True)
+    # ======================
+    # Noise (mixing the classes)
+    # ======================
+    healthy_noise = pd.DataFrame({
+        "blood_sugar": np.random.randint(120, 145, noise_n),
+        "blood_pressure": np.random.randint(80, 100, noise_n),
+        "diabetes": 0
+    })
 
-    noise_size = int(n * noise_ratio)
-    noise_idx = np.random.choice(n, size=noise_size, replace=False)
-    df.loc[noise_idx, "launch_to_israel"] = 1 - df.loc[noise_idx, "launch_to_israel"]
+    diabetic_noise = pd.DataFrame({
+        "blood_sugar": np.random.randint(105, 135, noise_n),
+        "blood_pressure": np.random.randint(70, 95, noise_n),
+        "diabetes": 1
+    })
 
-    df["signal_strength"] = df["signal_strength"].round(2)
-    df["signal_duration"] = df["signal_duration"].round(2)
-    df["time_to_peak"] = df["time_to_peak"].round(2)
-    df["latitude"] = df["latitude"].round(4)
-    df["longitude"] = df["longitude"].round(4)
+    # ======================
+    # Combine
+    # ======================
+    df = pd.concat(
+        [healthy, diabetic, healthy_noise, diabetic_noise],
+        ignore_index=True
+    )
+
+    # Shuffle
+    df = df.sample(frac=1, random_state=seed).reset_index(drop=True)
 
     return df
 
-df = generate_dataset()
-st.dataframe(df)
+df = generate_diabetes_dataset()
