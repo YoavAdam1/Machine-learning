@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import streamlit
+import streamlit as st
 
 def generate_diabetes_dataset(n=500, noise_ratio=0.1, seed=42):
     np.random.seed(seed)
